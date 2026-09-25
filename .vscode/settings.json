@@ -1,0 +1,6 @@
+{
+    "chat.agent.sandbox.allowAutoApprove": false,
+    "chat.agent.sandbox.allowNetwork": true,
+    "chat.agent.sandbox.allowUnsandboxedCommands": true,
+    "chat.agent.codeBlockProgress": true
+}
