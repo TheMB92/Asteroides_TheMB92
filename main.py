@@ -37,7 +37,9 @@ def main():
                  if asteroid.collides_with(bullet):
                       logger.log_event("asteroid_shot")
                       score.score += POINTS_PER_ASTEROID_HIT
-                      bullet.kill()
+                      bullet.pen_count -= 1
+                      if bullet.pen_count < 1:
+                        bullet.kill()
                       asteroid.split()
             if asteroid.collides_with(first_player):
                 logger.log_event("player_hit")
@@ -50,6 +52,9 @@ def main():
             sprite.draw(screen)
         pygame.display.flip()
         dt = clock.tick(60) / 1000
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                      return
