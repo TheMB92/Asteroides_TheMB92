@@ -25,19 +25,20 @@ def main():
     drawable  = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots     = pygame.sprite.Group()
+    powerups  = pygame.sprite.Group()
     player.Player.containers = (updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     asteroidfield.AsteroidField.containers = (updatable)
     shot.Shot.containers = (updatable, drawable, shots)
     rendered_text.Rendered_Score.containers = (updatable, drawable)
-    shot_upgrades.Upgrade.containers = (updatable, drawable)
+    shot_upgrades.PowerUP.containers = (updatable, drawable, powerups)
     score = rendered_text.Rendered_Score(0.0,0,0)
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock  = pygame.time.Clock()
     dt     = 0.0
     the_asteroid_field = asteroidfield.AsteroidField()
-    first_player = player.Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
-    testupgrade = shot_upgrades.RateUpgrade(SCREEN_HEIGHT/3, SCREEN_HEIGHT/3)
+    player1 = player.Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+    testupgrade = shot_upgrades.PenUpgrade(SCREEN_HEIGHT/3, SCREEN_HEIGHT/3)
     while True:
         logger.log_state()
         pygame.Surface.fill(screen, pygame.Color(0,0,0))
@@ -51,9 +52,12 @@ def main():
                       if bullet.pen_count < 1:
                         bullet.kill()
                       asteroid.split()
-            if asteroid.collides_with(first_player):
+            if asteroid.collides_with(player1):
                 closegame(score.score)
-
+        for powerup in powerups:
+             if powerup.collides_with(player1):
+                  powerup.upgrade(player1)
+                  powerup.kill()
         for sprite in drawable:
             sprite.draw(screen)
         pygame.display.flip()
@@ -64,7 +68,6 @@ def main():
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     closegame(score.score)
-                    return
                 pass
 
 if __name__ == "__main__":

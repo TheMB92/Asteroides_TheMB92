@@ -3,9 +3,9 @@ import circleshape
 from constants import SHOT_RADIUS,LINE_WIDTH
 
 class Shot(circleshape.CircleShape):
-    def __init__(self,x: float,y: float) -> None:
+    def __init__(self,x: float,y: float, pen_count: int) -> None:
         super().__init__(x,y,SHOT_RADIUS)
-        self.pen_count = 1
+        self.pen_count = pen_count
 
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.circle(
