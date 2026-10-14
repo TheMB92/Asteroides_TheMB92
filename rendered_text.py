@@ -45,7 +45,7 @@ class Rendered_Stats(Rendered_Text):
         super().__init__(x,y)
         self.pen = f"F.Pen:{player.shot_pen_count}"
         self.shot_speed = f"F,Spd:{player.shot_speed}"
-        self.fire_rate = f"F.Rate:{1000 / player.shot_cd}"
+        self.fire_rate = f"F.Rate:{player.shot_rate}"
 
     def refresh(self,player: Player) -> None:
         self.player = player
@@ -59,10 +59,10 @@ class Rendered_Stats(Rendered_Text):
             self.shot_speed = f"F.Spd:{self.player.shot_speed}"
         else:
             self.shot_speed = f"F.Spd:{self.player.shot_speed}(Max)"
-        if self.player.shot_cd > MIN_SHOT_CD:
-            self.fire_rate = f"F.Rate:{int(50 / self.player.shot_cd)}"
+        if self.player.shot_rate < MAX_SHOT_RATE:
+            self.fire_rate = f"F.Rate:{int(self.player.shot_rate)}"
         else:
-            self.fire_rate = f"F.Rate:{int(50 / self.player.shot_cd)}(Max)"
+            self.fire_rate = f"F.Rate:{int(self.player.shot_rate)}(Max)"
 
     def draw(self, screen: pygame.Surface) -> None:
         freetype.Font.render_to(

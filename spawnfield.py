@@ -82,7 +82,7 @@ class AsteroidField(SpawnField):
     def intensify(self) -> None:
         self.spawn_rate_sec -= 0.0035
         self.intensity += 1
-        if self.intensity >= 9:
+        if self.intensity >= 8:
             self.intensity = 0
             self.asteroid_kinds += 1
 
@@ -117,13 +117,13 @@ class PowerUpField(SpawnField):
         self.spawn_rate_sec = UPGRADE_SPAWN_RATE_SECONDS
         self.pen = player.shot_pen_count
         self.speed = player.shot_speed
-        self.cd = player.shot_cd
+        self.rate = player.shot_rate
 
     def refresh(self,player: Player) -> None:
         self.spawn_rate_sec = UPGRADE_SPAWN_RATE_SECONDS
         self.pen = player.shot_pen_count
         self.speed = player.shot_speed
-        self.cd = player.shot_cd
+        self.rate = player.shot_rate
         
     def spawn(
             self, kind, 
@@ -147,10 +147,10 @@ class PowerUpField(SpawnField):
             position = edge[1](random.uniform(0, 1))
             kind = 0
             selector = random.randint(0,100)
-            if selector <= 15 and self.pen < MAX_SHOT_PEN_COUNT:
+            if selector <= 10 and self.pen < MAX_SHOT_PEN_COUNT:
                 kind = PenUpgrade
-            if selector < 40 and self.cd > MIN_SHOT_CD :
+            if selector < 50 and selector > 10 and self.rate <= MAX_SHOT_RATE :
                 kind = RateUpgrade
-            if selector >= 40 and self.speed < MAX_SHOT_SPEED:
+            if selector >= 50 and self.speed < MAX_SHOT_SPEED:
                 kind = SpeedUpgrade
             self.spawn(kind, position, velocity, speed)
