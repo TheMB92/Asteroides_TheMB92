@@ -119,7 +119,7 @@ class PowerUpField(SpawnField):
             edge = random.choice(self.edges)
             speed = random.randint(80, 300)
             velocity = edge[0] * speed
-            velocity = velocity.rotate(random.randint(-30,30))
+            velocity = velocity.rotate(random.randint(-60,60))
             position = edge[1](random.uniform(0, 1))
             kind = 0
             selector = random.randint(0,100)
