@@ -13,15 +13,15 @@ class Upgrade(pygame.sprite.Sprite):
         else:
             super().__init__()
         self.color = pygame.Color(0,0,0)
-        self.velocity = (random.randint(-1,1),random.randint(-1,1))
+        self.velocity = pygame.Vector2(1,1)
         self.rect = pygame.Rect(x,y,constants.UPGRADE_SIZE, constants.UPGRADE_SIZE)
         self.collision_box = (x,x+constants.UPGRADE_SIZE,y,y+constants.UPGRADE_SIZE)
         
     def draw(self, screen: pygame.Surface) -> None:
         pass
-    
+
     def update(self, dt: float) -> None:
-        self.rect.move(self.velocity[0]*dt,self.velocity[1]*dt)
+        self.rect.move(self.velocity.x*dt,self.velocity.y*dt)
 
 #    def collides_with(self, player: player.Player) -> bool:
 #        collide_distance = 

@@ -5,8 +5,16 @@ import rendered_text
 from asteroid import Asteroid
 import sys
 import asteroidfield
+import shot_upgrades
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT,POINTS_PER_ASTEROID_HIT, POINTS_PER_SEC
 import logger
+
+def closegame(score):
+        final_score = int(score)
+        print("Game Over!")
+        print(f"Score: {final_score}") 
+        sys.exit()
+
 
 def main():
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
@@ -22,12 +30,14 @@ def main():
     asteroidfield.AsteroidField.containers = (updatable)
     shot.Shot.containers = (updatable, drawable, shots)
     rendered_text.Rendered_Score.containers = (updatable, drawable)
+    shot_upgrades.Upgrade.containers = (updatable, drawable)
     score = rendered_text.Rendered_Score(0.0,0,0)
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock  = pygame.time.Clock()
     dt     = 0.0
     the_asteroid_field = asteroidfield.AsteroidField()
     first_player = player.Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+    testupgrade = shot_upgrades.RateUpgrade(SCREEN_HEIGHT/3, SCREEN_HEIGHT/3)
     while True:
         logger.log_state()
         pygame.Surface.fill(screen, pygame.Color(0,0,0))
@@ -42,22 +52,19 @@ def main():
                         bullet.kill()
                       asteroid.split()
             if asteroid.collides_with(first_player):
-                logger.log_event("player_hit")
-                score = int(score.score)
-                print("Game Over!")
-                print(f"Score: {score}") 
-                sys.exit() 
-        
+                closegame(score.score)
+
         for sprite in drawable:
             sprite.draw(screen)
         pygame.display.flip()
         dt = clock.tick(60) / 1000
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
-            pygame.event.post(pygame.event.Event(pygame.QUIT))
+            closegame(score.score)
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                     return
+                    closegame(score.score)
+                    return
                 pass
 
 if __name__ == "__main__":
