@@ -15,7 +15,6 @@ class PowerUP(pygame.sprite.Sprite):
             super().__init__()
         self.position = pygame.Vector2(x,y)
         self.color = pygame.Color(0,0,0)
-        self.speed = 0
         self.velocity = pygame.Vector2(0,0)
         self.rect = pygame.Rect(
             x,y,
@@ -37,8 +36,8 @@ class PowerUP(pygame.sprite.Sprite):
 
     def update(self, dt: float) -> None:
         self.inbounds()
-        self.rect.move_ip(self.velocity.x*dt*self.speed,self.velocity.y*dt*self.speed)
-        self.position = pygame.Vector2(self.rect.x,self.rect.y)
+        self.position += (self.velocity * dt)
+        self.rect.topleft = self.position
 
     def collides_with(self, player: player.Player) -> bool:
         min_x = max(self.rect.x,min(player.position[0], (self.rect.x + UPGRADE_SIZE)))
