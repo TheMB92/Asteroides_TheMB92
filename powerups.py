@@ -13,9 +13,10 @@ class PowerUP(pygame.sprite.Sprite):
             super().__init__(*self.containers)
         else:
             super().__init__()
+        self.position = pygame.Vector2(x,y)
         self.color = pygame.Color(0,0,0)
-        self.speed = random.randint(50,250)
-        self.velocity = pygame.Vector2(random.uniform(-2,2),random.uniform(-2,2))
+        self.speed = 0
+        self.velocity = pygame.Vector2(0,0)
         self.rect = pygame.Rect(
             x,y,
             constants.UPGRADE_SIZE,constants.UPGRADE_SIZE)
@@ -26,6 +27,7 @@ class PowerUP(pygame.sprite.Sprite):
 
     def update(self, dt: float) -> None:
         self.rect.move_ip(self.velocity.x*dt*self.speed,self.velocity.y*dt*self.speed)
+        self.position = pygame.Vector2(self.rect.x,self.rect.y)
 
     def collides_with(self, player: player.Player) -> bool:
         min_x = max(self.rect.x,min(player.position[0], (self.rect.x + constants.UPGRADE_SIZE)))
@@ -37,32 +39,50 @@ class PowerUP(pygame.sprite.Sprite):
     def upgrade(self,player: player.Player):
         pass
 
+    def maxed(self,player) -> bool:
+        return False
+
 class RateUpgrade(PowerUP):
     def __init__(self, x: float, y: float) -> None:
         super().__init__(x, y)
-        self.color = pygame.Color(255,255,0)
+        self.color = constants.SHOT_RATE_COLOR
 
     def upgrade(self, player: player.Player):
         logger.log_event("shot_rate_upgrade")
         self.kill
-        player.shot_cd -= constants.UPGRADE_SHOT_RATE
+        player.shot_cd -= constants.UPGRADE_SHOT_CD
+
+    def maxed(self, player: player.Player) -> bool:
+        if player.shot_cd <= constants.MIN_SHOT_CD:
+            return True
+        return False
 
 class SpeedUpgrade(PowerUP):
     def __init__(self, x: float, y: float) -> None:
         super().__init__(x, y)
-        self.color = pygame.Color(255,0,255)
+        self.color = constants.SHOT_SPEED_COLOR
 
     def upgrade(self, player: player.Player):
-        logger.log_event("shot_rate_upgrade")
+        logger.log_event("shot_speed_upgrade")
         self.kill
         player.shot_speed += constants.UPGRADE_SHOT_SPEED
+
+    def maxed(self, player: player.Player) -> bool:
+        if player.shot_speed >= constants.MAX_SHOT_SPEED:
+            return True
+        return False
 
 class PenUpgrade(PowerUP):
     def __init__(self, x: float, y: float) -> None:
         super().__init__(x, y)
-        self.color = pygame.Color(120,30,30)
+        self.color = constants.SHOT_PEN_COLOR
 
     def upgrade(self, player: player.Player):
-        logger.log_event("shot_rate_upgrade")
+        logger.log_event("shot_pen_upgrade")
         self.kill
         player.shot_pen_count += constants.UPGRADE_SHOT_PEN_COUNT
+
+    def maxed(self, player: player.Player) -> bool:
+        if player.shot_pen_count >= constants.MAX_SHOT_PEN_COUNT:
+            return True
+        return False
