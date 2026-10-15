@@ -14,6 +14,7 @@ class Player(circleshape.CircleShape):
         self.shot_speed: int = PLAYER_SHOT_SPEED
         self.shot_pen_count = 1
         self.powered_up_count = 0
+        self.direction = False
 
 
     def triangle(self) -> list[pygame.Vector2]:
@@ -31,43 +32,36 @@ class Player(circleshape.CircleShape):
         self.rotation += PLAYER_TURN_RATE * dt
 
     def move(self,dt) -> None:
-        rotated_vector = unit_vector.rotate(self.rotation)
-        self.velocity = rotated_vector * PLAYER_MOVE_RATE
-        self.position += self.velocity * dt
-        if dt > 0:
-            self.direction = 1
-        else:
-            self.direction = -1
+        fwd = unit_vector.rotate(self.rotation)
+        self.velocity = fwd * PLAYER_MOVE_RATE
+        self.position += self.velocity * dt * self.direction
 
     def shoot(self) -> None:
-        rotated_vector = unit_vector.rotate(self.rotation)
+        fwd = unit_vector.rotate(self.rotation)
         bullet = shot.Shot(self.position[0],self.position[1],self.shot_pen_count)
-        bullet.velocity = (rotated_vector * self.shot_speed) + (self.velocity * self.direction)
+        bullet.velocity = (fwd * self.shot_speed) + (self.velocity * self.direction)
 
-    def inbounds(self) -> None:
-        if self.position.x >= SCREEN_WIDTH:
-            self.position.x = SCREEN_WIDTH
-        if self.position.x <= 0:
-            self.position.x = 0
-        if self.position.y >= SCREEN_HEIGHT:
-            self.position.y = SCREEN_HEIGHT
-        if self.position.y <= 0:
-            self.position.y = 0
+    def clamp_to_screen(self) -> None:
+        if self.position.x >= SCREEN_WIDTH - self.radius/2:
+            self.position.x = SCREEN_WIDTH - self.radius/2
+        if self.position.x <= 0 + self.radius/2:
+            self.position.x = 0+ self.radius/2
+        if self.position.y >= SCREEN_HEIGHT - self.radius/2:
+            self.position.y = SCREEN_HEIGHT - self.radius/2
+        if self.position.y <= 0+ self.radius/2:
+            self.position.y = 0+ self.radius/2
 
     def update(self, dt: float) -> None:
-        self.inbounds()
         self.shot_cd_counter -= dt
         keys = pygame.key.get_pressed()
+        self.direction = keys[pygame.K_w] - keys[pygame.K_s]
         if keys[pygame.K_a]:
             self.rotate(-dt)
         if keys[pygame.K_d]:
             self.rotate(dt)
-        if keys[pygame.K_w]:
+        if keys[pygame.K_w] or keys[pygame.K_s]:
             self.move(dt)
-        if keys[pygame.K_s]:
-            self.move(-dt)
-        if not keys[pygame.K_w] and not keys[pygame.K_s]:
-            self.velocity = pygame.Vector2(0,0)
+        self.clamp_to_screen()
         if keys[pygame.K_SPACE]:
             if self.shot_cd_counter > 0:
                 return
