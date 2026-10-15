@@ -82,7 +82,7 @@ class AsteroidField(SpawnField):
     def intensify(self) -> None:
         self.spawn_rate_sec -= 0.0035
         self.intensity += 1
-        if self.intensity >= 8:
+        if self.intensity >= 6:
             self.intensity = 0
             self.asteroid_kinds += 1
 
