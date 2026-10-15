@@ -33,13 +33,13 @@ class Player(circleshape.CircleShape):
 
     def move(self,dt) -> None:
         fwd = unit_vector.rotate(self.rotation)
-        self.velocity = fwd * PLAYER_MOVE_RATE
-        self.position += self.velocity * dt * self.direction
+        self.velocity = fwd * PLAYER_MOVE_RATE * self.direction
+        self.position += self.velocity * dt
 
     def shoot(self) -> None:
         fwd = unit_vector.rotate(self.rotation)
         bullet = shot.Shot(self.position[0],self.position[1],self.shot_pen_count)
-        bullet.velocity = (fwd * self.shot_speed) + (self.velocity * self.direction)
+        bullet.velocity = (fwd * self.shot_speed) + (self.velocity)
 
     def clamp_to_screen(self) -> None:
         if self.position.x >= SCREEN_WIDTH - self.radius/2:
