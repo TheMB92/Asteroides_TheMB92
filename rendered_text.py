@@ -42,9 +42,9 @@ class Rendered_Score(Rendered_Text):
 class Rendered_Stats(Rendered_Text):
     def __init__(self,player: Player, x: float, y: float) -> None:
         super().__init__(x,y)
-        self.pen = f"F.Pen:{player.shot_pen_count}"
-        self.shot_speed = f"F,Spd:{player.shot_speed / SCALE}"
-        self.fire_rate = f"F.Rate:{player.shot_rate}"
+        self.pen = f"Pen:{player.shot_pen_count}"
+        self.shot_speed = f"MV:{int(player.shot_speed / SCALE)} m/s"
+        self.fire_rate = f"Rate:{player.shot_rate} RPM"
 
     def refresh(self,player: Player) -> None:
         self.player = player
@@ -55,13 +55,13 @@ class Rendered_Stats(Rendered_Text):
         else:
             self.pen = f"Pen:{MAX_SHOT_PEN_COUNT}(Max)"
         if self.player.shot_speed < MAX_SHOT_SPEED:
-            self.shot_speed = f"MV:{self.player.shot_speed / SCALE}"
+            self.shot_speed = f"MV:{int(self.player.shot_speed / SCALE)} m/s"
         else:
-            self.shot_speed = f"MV:{self.player.shot_speed / SCALE}(Max)"
+            self.shot_speed = f"MV:{int(self.player.shot_speed / SCALE)} m/s(Max)"
         if self.player.shot_rate < MAX_SHOT_RATE:
-            self.fire_rate = f"RPM:{int(self.player.shot_rate)}"
+            self.fire_rate = f"Rate:{int(self.player.shot_rate)} RPM"
         else:
-            self.fire_rate = f"RPM:{int(self.player.shot_rate)}(Max)"
+            self.fire_rate = f"Rate:{int(self.player.shot_rate)} RPM(Max)"
 
     def draw(self, screen: pygame.Surface) -> None:
         freetype.Font.render_to(
@@ -69,10 +69,10 @@ class Rendered_Stats(Rendered_Text):
             f"{self.shot_speed}",
             SHOT_SPEED_COLOR,None,0,0,0)
         freetype.Font.render_to(
-            general_font,screen,(self.position.x+250,self.position.y),
+            general_font,screen,(self.position.x+270,self.position.y),
             f"{self.fire_rate}",
             SHOT_RATE_COLOR,None,0,0,0)
         freetype.Font.render_to(
-            general_font,screen,(self.position.x+500,self.position.y),
+            general_font,screen,(self.position.x+600,self.position.y),
             f"{self.pen}",
             SHOT_PEN_COLOR,None,0,0,0)
