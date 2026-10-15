@@ -17,17 +17,11 @@ class Asteroid(circleshape.CircleShape):
             self.radius,
             LINE_WIDTH
             )
-    def inbounds(self) -> None:
-        if self.position.x >= SCREEN_WIDTH + (self.radius * 5):
-            self.kill()
-        if self.position.x <= 0 - (self.radius * 5):
-            self.kill()
-        if self.position.y >= SCREEN_HEIGHT + (self.radius * 5):
-            self.kill()
-        if self.position.y <= 0 - (self.radius * 5):
-            self.kill()
+
     def update(self, dt: float) -> None:
         self.position += (self.velocity * dt)
+        if not self.inbounds():
+            self.kill()
 
     def split(self) -> None:
         self.kill()

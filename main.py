@@ -13,7 +13,7 @@ def closegame(score,player: player.Player):
         final_score = int(score)
         print("Game Over!")
         print(f"Score: {final_score}")
-        print(f"Final stats- F.Spd:{player.shot_speed} F.Rate:{int(player.shot_rate)} F.Pen:{player.shot_pen_count} Total powerups:{player.powered_up_count} ")
+        print(f"Final stats- MV:{player.shot_speed} RPM:{int(player.shot_rate)} Pen:{player.shot_pen_count} Total powerups:{player.powered_up_count} ")
         sys.exit()
 
 
@@ -57,18 +57,17 @@ def main():
                     if bullet.pen_count < 1:
                         bullet.kill()
                     asteroid.split()
-                    pass
-            if asteroid.collides_with(player1):
+                    break
+            if asteroid.collides_with(player1) and asteroid.alive():
                 closegame(score.score,player1)
         for powerup in powerups:
             if powerup.maxed(player1):
                  powerup.kill()
+                 continue
             if powerup.collides_with(player1):
-                powerup.kill()
                 powerup.upgrade(player1)
                 asteroid_field.intensify()
                 player1.powered_up_count += 1
-                pass
         for sprite in drawable:
             sprite.draw(screen)
         pygame.display.flip()

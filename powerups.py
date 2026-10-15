@@ -64,7 +64,7 @@ class RateUpgrade(PowerUP):
 
     def upgrade(self, player: player.Player):
         logger.log_event("shot_rate_upgrade")
-        self.kill
+        self.kill()
         player.shot_rate = min(MAX_SHOT_RATE, player.shot_rate + UPGRADE_SHOT_RATE)
 
 class SpeedUpgrade(PowerUP):
@@ -79,7 +79,7 @@ class SpeedUpgrade(PowerUP):
 
     def upgrade(self, player: player.Player):
         logger.log_event("shot_speed_upgrade")
-        self.kill
+        self.kill()
         player.shot_speed = min(MAX_SHOT_SPEED, player.shot_speed + UPGRADE_SHOT_SPEED)
 
 class PenUpgrade(PowerUP):
@@ -94,5 +94,5 @@ class PenUpgrade(PowerUP):
 
     def upgrade(self, player: player.Player):
         logger.log_event("shot_pen_upgrade")
-        self.kill
+        self.kill()
         player.shot_pen_count = min(MAX_SHOT_PEN_COUNT, player.shot_pen_count + UPGRADE_SHOT_PEN_COUNT)
