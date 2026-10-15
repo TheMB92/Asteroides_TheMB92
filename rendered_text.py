@@ -52,17 +52,17 @@ class Rendered_Stats(Rendered_Text):
 
     def update(self, dt: float) -> None:
         if self.player.shot_pen_count < MAX_SHOT_PEN_COUNT:
-            self.pen = f"F.Pen:{self.player.shot_pen_count}"
+            self.pen = f"Pen:{self.player.shot_pen_count}"
         else:
-            self.pen = f"F.Pen:{MAX_SHOT_PEN_COUNT}(Max)"
+            self.pen = f"Pen:{MAX_SHOT_PEN_COUNT}(Max)"
         if self.player.shot_speed < MAX_SHOT_SPEED:
-            self.shot_speed = f"F.Spd:{self.player.shot_speed}"
+            self.shot_speed = f"MV:{self.player.shot_speed}"
         else:
-            self.shot_speed = f"F.Spd:{self.player.shot_speed}(Max)"
+            self.shot_speed = f"MV:{self.player.shot_speed}(Max)"
         if self.player.shot_rate < MAX_SHOT_RATE:
-            self.fire_rate = f"F.Rate:{int(self.player.shot_rate)}"
+            self.fire_rate = f"RPM:{int(self.player.shot_rate)}"
         else:
-            self.fire_rate = f"F.Rate:{int(self.player.shot_rate)}(Max)"
+            self.fire_rate = f"RPM:{int(self.player.shot_rate)}(Max)"
 
     def draw(self, screen: pygame.Surface) -> None:
         freetype.Font.render_to(

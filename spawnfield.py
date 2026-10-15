@@ -125,7 +125,7 @@ class PowerUpField(SpawnField):
             selector = random.randint(0,100)
             if selector <= 10 and self.pen < MAX_SHOT_PEN_COUNT:
                 kind = PenUpgrade
-            if selector < 50 and selector > 10 and self.rate <= MAX_SHOT_RATE :
+            if selector < 50 and selector > 10 and self.rate < MAX_SHOT_RATE :
                 kind = RateUpgrade
             if selector >= 50 and self.speed < MAX_SHOT_SPEED:
                 kind = SpeedUpgrade

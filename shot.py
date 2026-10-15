@@ -18,4 +18,5 @@ class Shot(circleshape.CircleShape):
 
     def update(self, dt: float) -> None:
         self.position += (self.velocity * dt)
-    
+        if not self.inbounds():
+            self.kill()    

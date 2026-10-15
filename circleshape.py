@@ -1,5 +1,5 @@
 import pygame
-
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 
 # Base class for game objects
 class CircleShape(pygame.sprite.Sprite):
@@ -15,6 +15,17 @@ class CircleShape(pygame.sprite.Sprite):
         self.position: pygame.Vector2 = pygame.Vector2(x, y)
         self.velocity = pygame.Vector2(0, 0)
         self.radius = radius
+
+    def inbounds(self) -> bool:
+        if self.position.x >= SCREEN_WIDTH + (self.radius * 7):
+            return False
+        if self.position.x <= 0 - (self.radius * 7):
+            return False
+        if self.position.y >= SCREEN_HEIGHT + (self.radius * 7):
+            return False
+        if self.position.y <= 0 - (self.radius * 7):
+            return False
+        return True
 
     def draw(self, screen: pygame.Surface) -> None:
         # must override

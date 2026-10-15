@@ -13,7 +13,6 @@ class Player(circleshape.CircleShape):
         self.shot_rate: int = PLAYER_SHOT_CD_RATE
         self.shot_speed: int = PLAYER_SHOT_SPEED
         self.shot_pen_count = 1
-        self.rotated_vector = pygame.Vector2(0,1).rotate(self.rotation)
         self.powered_up_count = 0
 
 
@@ -30,17 +29,20 @@ class Player(circleshape.CircleShape):
 
     def rotate(self, dt: float) -> None:
         self.rotation += PLAYER_TURN_RATE * dt
-        self.rotated_vector = unit_vector.rotate(self.rotation)
 
     def move(self,dt) -> None:
-        self.rotated_vector = unit_vector.rotate(self.rotation)
-        self.velocity = self.rotated_vector * PLAYER_MOVE_RATE
+        rotated_vector = unit_vector.rotate(self.rotation)
+        self.velocity = rotated_vector * PLAYER_MOVE_RATE
         self.position += self.velocity * dt
+        if dt > 0:
+            self.direction = 1
+        else:
+            self.direction = -1
 
     def shoot(self) -> None:
-        self.rotated_vector = unit_vector.rotate(self.rotation)
+        rotated_vector = unit_vector.rotate(self.rotation)
         bullet = shot.Shot(self.position[0],self.position[1],self.shot_pen_count)
-        bullet.velocity = (self.rotated_vector * self.shot_speed) + (self.velocity * 2)
+        bullet.velocity = (rotated_vector * self.shot_speed) + (self.velocity * self.direction)
 
     def inbounds(self) -> None:
         if self.position.x >= SCREEN_WIDTH:
@@ -64,7 +66,7 @@ class Player(circleshape.CircleShape):
             self.move(dt)
         if keys[pygame.K_s]:
             self.move(-dt)
-        if not(keys[pygame.K_w] and keys[pygame.K_a] and keys[pygame.K_s] and keys[pygame.K_d]):
+        if not keys[pygame.K_w] and not keys[pygame.K_s]:
             self.velocity = pygame.Vector2(0,0)
         if keys[pygame.K_SPACE]:
             if self.shot_cd_counter > 0:
