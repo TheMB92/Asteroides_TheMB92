@@ -33,8 +33,8 @@ class Player(circleshape.CircleShape):
 
     def move(self,dt) -> None:
         fwd = unit_vector.rotate(self.rotation)
-        self.velocity = fwd * PLAYER_MOVE_RATE
-        self.position += self.velocity * dt * self.direction
+        self.velocity = fwd * PLAYER_MOVE_RATE * self.direction
+        self.position += self.velocity * dt
 
     def shoot(self) -> None:
         fwd = unit_vector.rotate(self.rotation)
