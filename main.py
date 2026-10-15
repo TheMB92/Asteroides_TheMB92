@@ -58,8 +58,8 @@ def main():
                         bullet.kill()
                     asteroid.split()
                     break
-#            if asteroid.collides_with(player1) and asteroid.alive():
-#                closegame(score.score,player1)
+            if asteroid.collides_with(player1) and asteroid.alive():
+                closegame(score.score,player1)
         for powerup in powerups:
             if powerup.maxed(player1):
                  powerup.kill()
