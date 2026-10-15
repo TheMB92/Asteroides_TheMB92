@@ -50,6 +50,8 @@ def main():
         updatable.update(dt)
         for asteroid in asteroids:
             for bullet in shots:
+                if not asteroid.alive():
+                    break
                 if asteroid.collides_with(bullet):
                     logger.log_event("asteroid_shot")
                     score.score += POINTS_PER_ASTEROID_HIT
@@ -58,6 +60,8 @@ def main():
                         bullet.kill()
                     asteroid.split()
                     break
+
+
             if asteroid.collides_with(player1) and asteroid.alive():
                 closegame(score.score,player1)
         for powerup in powerups:

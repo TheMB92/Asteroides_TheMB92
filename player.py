@@ -52,7 +52,6 @@ class Player(circleshape.CircleShape):
             self.position.y = 0+ self.radius/2
 
     def update(self, dt: float) -> None:
-        self.shot_cd_counter -= dt
         keys = pygame.key.get_pressed()
         self.direction = keys[pygame.K_w] - keys[pygame.K_s]
         if keys[pygame.K_a]:
@@ -61,9 +60,13 @@ class Player(circleshape.CircleShape):
             self.rotate(dt)
         if keys[pygame.K_w] or keys[pygame.K_s]:
             self.move(dt)
+        else:
+            self.velocity = unit_vector.rotate(self.rotation)
         self.clamp_to_screen()
         if keys[pygame.K_SPACE]:
-            if self.shot_cd_counter > 0:
-                return
-            self.shot_cd_counter = 60 / self.shot_rate
-            self.shoot()
+            self.shot_cd_counter -= dt
+            if self.shot_cd_counter <= 0:
+                self.shoot()
+                self.shot_cd_counter += 60 / self.shot_rate
+        else:
+            self.shot_cd_counter = 0

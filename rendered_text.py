@@ -10,7 +10,6 @@ general_font = freetype.SysFont(freetype.get_default_font(),30)
 
 class Rendered_Text(pygame.sprite.Sprite):
     containers: tuple[pygame.sprite.Group, ...]
-    
     def __init__(self, x: float, y: float) -> None:
         if hasattr(self, "containers"):
             super().__init__(*self.containers)
@@ -44,7 +43,7 @@ class Rendered_Stats(Rendered_Text):
     def __init__(self,player: Player, x: float, y: float) -> None:
         super().__init__(x,y)
         self.pen = f"F.Pen:{player.shot_pen_count}"
-        self.shot_speed = f"F,Spd:{player.shot_speed}"
+        self.shot_speed = f"F,Spd:{player.shot_speed / SCALE}"
         self.fire_rate = f"F.Rate:{player.shot_rate}"
 
     def refresh(self,player: Player) -> None:
@@ -56,9 +55,9 @@ class Rendered_Stats(Rendered_Text):
         else:
             self.pen = f"Pen:{MAX_SHOT_PEN_COUNT}(Max)"
         if self.player.shot_speed < MAX_SHOT_SPEED:
-            self.shot_speed = f"MV:{self.player.shot_speed}"
+            self.shot_speed = f"MV:{self.player.shot_speed / SCALE}"
         else:
-            self.shot_speed = f"MV:{self.player.shot_speed}(Max)"
+            self.shot_speed = f"MV:{self.player.shot_speed / SCALE}(Max)"
         if self.player.shot_rate < MAX_SHOT_RATE:
             self.fire_rate = f"RPM:{int(self.player.shot_rate)}"
         else:
