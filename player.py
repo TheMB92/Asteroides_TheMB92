@@ -51,12 +51,16 @@ class Player(circleshape.CircleShape):
     def clamp_to_screen(self) -> None:
         if self.position.x >= SCREEN_WIDTH - self.radius/2:
             self.position.x = SCREEN_WIDTH - self.radius/2
+            self.velocity[0] = self.velocity[0]*-0.5
         if self.position.x <= 0 + self.radius/2:
             self.position.x = 0+ self.radius/2
+            self.velocity[0] = self.velocity[0]*-0.5
         if self.position.y >= SCREEN_HEIGHT - self.radius/2:
             self.position.y = SCREEN_HEIGHT - self.radius/2
+            self.velocity[1] = self.velocity[1]*-0.5
         if self.position.y <= 0+ self.radius/2:
             self.position.y = 0+ self.radius/2
+            self.velocity[1] = self.velocity[1]*-0.5
 
     def update(self, dt: float) -> None:
         keys = pygame.key.get_pressed()
