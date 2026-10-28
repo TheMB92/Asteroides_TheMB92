@@ -84,7 +84,7 @@ class AsteroidField(SpawnField):
         self.spawn_rate_sec -= 0.0035
         self.intensity += 1
         
-        if self.intensity >= 7:
+        if self.intensity >= 6:
             self.intensity = 0
             self.asteroid_kinds += 1
             self.max_spd_multiplier += 1
