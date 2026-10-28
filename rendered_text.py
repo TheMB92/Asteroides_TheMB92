@@ -112,7 +112,7 @@ class Main_Menu_Text(Rendered_Text):
                                 "white",None,0,0,0*SCALE)
             freetype.Font.render_to(
                                 general_font,screen,(self.position.x - (220 * SCALE),self.position.y - ((SCREEN_HEIGHT/3)-350*SCALE)),
-                                f"Muzzle Velocity: {self.last_player.shot_speed} m/s",
+                                f"Muzzle Velocity: {int(self.last_player.shot_speed / SCALE)} m/s",
                                 SHOT_SPEED_COLOR,None,0,0,0*SCALE)
             freetype.Font.render_to(
                                 general_font,screen,(self.position.x - (220 * SCALE),self.position.y - ((SCREEN_HEIGHT/3)-380*SCALE)),
