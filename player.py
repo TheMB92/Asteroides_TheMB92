@@ -71,8 +71,6 @@ class Player(circleshape.CircleShape):
             self.rotate(dt)
         if keys[pygame.K_w] or keys[pygame.K_s]:
             self.move(dt)
-#        else:
-#            self.velocity = unit_vector.rotate(self.rotation)
         self.clamp_to_screen()
         if keys[pygame.K_SPACE]:
             self.shot_cd_counter -= dt
