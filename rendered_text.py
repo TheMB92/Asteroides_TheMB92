@@ -4,7 +4,6 @@ from pygame import freetype
 from player import Player
 from powerups import *
 
-
 pygame.freetype.init()
 general_font = freetype.SysFont(freetype.get_default_font(),30)
 
@@ -76,3 +75,54 @@ class Rendered_Stats(Rendered_Text):
             general_font,screen,(self.position.x+600,self.position.y),
             f"{self.pen}",
             SHOT_PEN_COLOR,None,0,0,0)
+
+class Main_Menu_Text(Rendered_Text):
+    def __init__(self, x: float, y: float, score: int, firstgame : bool, last_player: player.Player) -> None:
+        self.score = score
+        self.firstgame = firstgame
+        self.last_player = last_player
+        super().__init__(x, y)
+    def draw(self, screen: pygame.Surface) -> None:
+        freetype.Font.render_to(
+            general_font,screen,(self.position.x - (263 * SCALE),self.position.y- (SCREEN_HEIGHT/3)),
+            "Asteroids by TheMB92",
+            "white",None,0,0,50*SCALE)
+        freetype.Font.render_to(
+                    general_font,screen,(self.position.x - (250 * SCALE),self.position.y - ((SCREEN_HEIGHT/3)-200*SCALE)),
+                    'Press "N" to start a new game',
+                    "white",None,0,0,0*SCALE)
+        freetype.Font.render_to(
+                    general_font,screen,(self.position.x - (250 * SCALE),self.position.y - ((SCREEN_HEIGHT/3)-230*SCALE)),
+                    'Press "Q" to quit game',
+                    "white",None,0,0,0*SCALE)
+
+        if not self.firstgame:
+            freetype.Font.render_to(
+                general_font,screen,(self.position.x - (150 * SCALE),self.position.y- ((SCREEN_HEIGHT/3)-100*SCALE)),
+                "GAME OVER",
+                "red",None,0,0,50*SCALE)
+            freetype.Font.render_to(
+                                general_font,screen,(self.position.x - (250 * SCALE),self.position.y - ((SCREEN_HEIGHT/3)-290*SCALE)),
+                                "Last Round Results:",
+
+                                "white",None,0,0,0*SCALE)
+            freetype.Font.render_to(
+                                general_font,screen,(self.position.x - (220 * SCALE),self.position.y - ((SCREEN_HEIGHT/3)-320*SCALE)),
+                                f'Score: {self.score}',
+                                "white",None,0,0,0*SCALE)
+            freetype.Font.render_to(
+                                general_font,screen,(self.position.x - (220 * SCALE),self.position.y - ((SCREEN_HEIGHT/3)-350*SCALE)),
+                                f"Muzzle Velocity: {self.last_player.shot_speed} m/s",
+                                SHOT_SPEED_COLOR,None,0,0,0*SCALE)
+            freetype.Font.render_to(
+                                general_font,screen,(self.position.x - (220 * SCALE),self.position.y - ((SCREEN_HEIGHT/3)-380*SCALE)),
+                                f"Rate: {int(self.last_player.shot_rate)} RPM",
+                                SHOT_RATE_COLOR,None,0,0,0*SCALE)
+            freetype.Font.render_to(
+                                general_font,screen,(self.position.x - (220 * SCALE),self.position.y - ((SCREEN_HEIGHT/3)-410*SCALE)),
+                                f"Pen: {self.last_player.shot_pen_count}",
+                                SHOT_PEN_COLOR,None,0,0,0*SCALE)
+            freetype.Font.render_to(
+                                general_font,screen,(self.position.x - (220 * SCALE),self.position.y - ((SCREEN_HEIGHT/3)-440*SCALE)),
+                                f"Total Power-Ups: {self.last_player.powered_up_count}",
+                                "white",None,0,0,0*SCALE)
