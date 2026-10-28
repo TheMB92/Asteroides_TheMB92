@@ -59,6 +59,7 @@ class AsteroidField(SpawnField):
         self.spawn_rate_sec = ASTEROID_SPAWN_RATE_SECONDS
         self.asteroid_kinds = ASTEROID_KINDS
         self.intensity = 0
+        self.max_spd_multiplier = 3
 
     def spawn(
         self, radius: float, position: pygame.Vector2, velocity: pygame.Vector2
@@ -72,7 +73,7 @@ class AsteroidField(SpawnField):
             self.spawn_timer = 0
             # spawn a new asteroid at a random edge
             edge = random.choice(self.edges)
-            speed = random.randint(40, 100)
+            speed = random.randint(ASTEROID_MIN_SPD, (ASTEROID_MIN_SPD * self.max_spd_multiplier))
             velocity = edge[0] * speed
             velocity = velocity.rotate(random.randint(-30, 30))
             position = edge[1](random.uniform(0, 1))
@@ -82,9 +83,11 @@ class AsteroidField(SpawnField):
     def intensify(self) -> None:
         self.spawn_rate_sec -= 0.0035
         self.intensity += 1
+        
         if self.intensity >= 7:
             self.intensity = 0
             self.asteroid_kinds += 1
+            self.max_spd_multiplier += 1
 
 
 class PowerUpField(SpawnField):

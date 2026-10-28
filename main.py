@@ -13,7 +13,7 @@ def closegame(score,player: player.Player):
         final_score = int(score)
         print("Game Over!")
         print(f"Score: {final_score}")
-        print(f"Final stats- MV:{player.shot_speed} RPM:{int(player.shot_rate)} Pen:{player.shot_pen_count} Total powerups:{player.powered_up_count} ")
+        print(f"Final stats - MV:{player.shot_speed} RPM:{int(player.shot_rate)} Pen:{player.shot_pen_count} Total powerups:{player.powered_up_count} ")
         sys.exit()
 
 
