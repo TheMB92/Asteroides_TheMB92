@@ -33,7 +33,7 @@ class Player(circleshape.CircleShape):
 
     def move(self,dt) -> None:
         fwd = unit_vector.rotate(self.rotation)
-        self.velocity += fwd * PLAYER_ACCEL_RATE * self.direction
+        self.velocity += fwd * PLAYER_ACCEL_RATE * self.direction * dt
         if self.velocity[0] > PLAYER_SPD_LIMIT:
             self.velocity[0] = PLAYER_SPD_LIMIT
         if self.velocity[0] < -PLAYER_SPD_LIMIT:
