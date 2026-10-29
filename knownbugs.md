@@ -76,3 +76,11 @@ Five additional review passes covered input and movement; collision detection; s
 - Reproduction: use a width of 640. The stats start at x=-160, placing almost all of the muzzle-velocity label outside the left edge. An isolated render with the current label measured its right edge at x=4.
 - Expected: all HUD labels remain visible at supported window sizes.
 - Suggested fix: calculate HUD placement from the actual window width and measured text widths, with consistent padding. Scale the font or wrap the stats onto additional rows when necessary; define and validate a minimum supported resolution if needed.
+
+## 10. Player collision shape does not match the visible ship (P2)
+
+- Location: `player.py`, `Player.triangle()`; `circleshape.py`, `CircleShape.collides_with()`.
+- The player is drawn as a triangle, but collision detection uses a circle centered on the player with radius `PLAYER_RADIUS`. The circle includes empty space beside the ship, while the triangle's rear corners extend beyond it.
+- Reproduction: approach an asteroid side-on or with a rear corner. Collisions can register before the visible ship touches the asteroid, or visible rear-corner contact can go undetected.
+- Expected: collisions agree with the visible player shape at every rotation.
+- Suggested fix: use triangle-versus-circle collision detection for player–asteroid collisions, using the vertices returned by `triangle()` and checking both edge distance and whether the asteroid's center lies inside the triangle.
