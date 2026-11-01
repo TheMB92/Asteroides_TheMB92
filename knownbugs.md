@@ -37,3 +37,30 @@ Resolved issues are archived in [bughistory.md](bughistory.md). Original issue n
 - Reproduction: approach an asteroid side-on or with a rear corner. Collisions can register before the visible ship touches the asteroid, or visible rear-corner contact can go undetected.
 - Expected: collisions agree with the visible player shape at every rotation.
 - Suggested fix: use triangle-versus-circle collision detection for player–asteroid collisions, using the vertices returned by `triangle()` and checking both edge distance and whether the asteroid's center lies inside the triangle.
+
+## 11. Holding N can immediately restart after a round ends (P2)
+
+- Location: `main.py`, `main()`, the `keys[pygame.K_n]` check.
+- Starting a round checks whether N is held, rather than whether a new press occurred. If N is still held when gameplay returns, the next menu iteration immediately starts another round, replacing the results screen without a fresh request.
+- Reproduction: hold N while ending a round with Escape. The menu starts another round while the same N press remains held.
+- Verification (2026-11-01): ran the actual menu loop with N continuously pressed and a stub game that returned immediately. The game was called twice without any release or new press. This confirms the menu trigger; the round duration was shortened for an isolated test.
+- Expected: starting another round requires a fresh N press in the menu.
+- Suggested fix: start rounds from `pygame.KEYDOWN` events for N, or require a release before accepting another press. Avoid processing stale start events after returning from gameplay.
+
+## 12. Event log frame numbers freeze after the snapshot limit (P3)
+
+- Location: `logger.py`, `log_state()` and `log_event()`.
+- `log_state()` returns before incrementing `_frame_count` once it exceeds `_FPS * _MAX_SECONDS`. Event logging continues, but every subsequent event reports frame 961, including events in later rounds. This prevents identifying the actual simulation frame of a hit, split, or upgrade.
+- Reproduction: set `_frame_count` to 960, call `log_state()` 20 times and log an event; call it another 100 times and log another event. Both events report frame 961.
+- Verification (2026-11-01): reproduced with the real logging functions and mocked file writes, preserving existing log files. Both captured event records contained `"frame": 961`.
+- Expected: the snapshot limit stops state snapshots while event frame numbers continue to advance.
+- Suggested fix: increment the frame counter on every gameplay iteration before applying the state-snapshot limit. Keep the limit on snapshot writing only.
+
+## 13. Spawn timers discard elapsed intervals during long frames (P2)
+
+- Location: `spawnfield.py`, `AsteroidField.update()` and `PowerUpField.update()`.
+- Each update handles at most one spawn interval and resets `spawn_timer` to zero. Any remaining elapsed time is discarded. Frame stalls therefore reduce asteroid and powerup spawn frequency relative to survival scoring, which uses the full elapsed time.
+- Reproduction: update an asteroid field twice with `dt=1.8`. Only two asteroids spawn over 3.6 seconds, despite the 0.8-second interval. Updating the same total time in 0.1-second steps produces four. For a powerup field, two updates with `dt=6` produce two selection attempts over 12 seconds, versus four attempts with 0.1-second steps at the 3-second interval.
+- Verification (2026-11-01): reproduced both comparisons with real field updates and mocked `spawn()` calls. Powerup counts measure selection attempts, since maxed upgrade types can intentionally produce no pickup.
+- Expected: spawn scheduling accounts for elapsed intervals and retains the unused remainder, independently of frame rate.
+- Suggested fix: subtract the interval instead of resetting to zero, and process each elapsed interval with a loop. If limiting catch-up spawns to avoid bursts, define that policy explicitly and retain the remaining time.
