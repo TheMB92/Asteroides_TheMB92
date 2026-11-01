@@ -1,10 +1,10 @@
 # Known bugs
 
-Issues recorded during review. P2 indicates a normal-priority bug; P3 indicates a lower-priority issue.
+Issues recorded during review. P2 indicates a normal-priority bug; P3 indicates a lower-priority issue ; IB indicated intended behaviour; IR indicated issue resolved; RT indicated requries testing.
 
 Five additional review passes covered input and movement; collision detection; spawning and upgrades; startup and game lifecycle; and settings, rendering, and logging. New findings below were checked with isolated runtime reproductions. No game source was changed. This review does not guarantee that every bug has been found.
 
-## 1. Releasing fire bypasses the cooldown (P2)
+## 1. Releasing fire bypasses the cooldown (IB)
 
 - Location: `player.py`, `Player.update()`.
 - Releasing Space resets `shot_cd_counter` to zero, so the next press fires immediately regardless of the remaining cooldown.
@@ -12,7 +12,7 @@ Five additional review passes covered input and movement; collision detection; s
 - Expected: the cooldown expires based on elapsed time, including time spent with Space released.
 - Suggested fix: decrement the cooldown every update, clamping it to zero, regardless of whether Space is pressed. Fire only when Space is pressed and the cooldown has expired, then set the next cooldown to `60 / self.shot_rate`. Remove the release-time reset.
 
-## 2. Diagonal movement exceeds the speed limit (P2)
+## 2. Diagonal movement exceeds the speed limit (RT)
 
 - Location: `player.py`, `Player.move()`.
 - Each velocity component is capped separately. At a 45-degree heading, the resulting speed can reach approximately 636 with the current configured limit of 450.
@@ -20,7 +20,7 @@ Five additional review passes covered input and movement; collision detection; s
 - Expected: total movement speed stays within `PLAYER_SPD_LIMIT` regardless of heading.
 - Suggested fix: after acceleration, compare `self.velocity.length_squared()` with `PLAYER_SPD_LIMIT ** 2`; if it exceeds that value, call `self.velocity.scale_to_length(PLAYER_SPD_LIMIT)` instead of clamping each component.
 
-## 3. The player can extend beyond the screen (P2)
+## 3. The player can extend beyond the screen (RT)
 
 - Location: `player.py`, `Player.clamp_to_screen()` and `Player.update()`.
 - Clamping happens before the position update, allowing movement to cross the boundary in the same frame. The half-radius margin also allows the drawn triangle to extend outside the screen at the clamped position.
@@ -28,7 +28,7 @@ Five additional review passes covered input and movement; collision detection; s
 - Expected: the player remains within the screen after movement, accounting for the ship's visible shape.
 - Suggested fix: update position before clamping. Use the minimum and maximum x/y coordinates of `triangle()` to calculate the correction needed to keep every vertex inside the screen, including a margin for the outline. Apply that correction to the player position.
 
-## 4. Boundary clamping reverses velocity even when moving inward (P2)
+## 4. Boundary clamping reverses velocity even when moving inward (IR)
 
 - Location: `player.py`, `Player.clamp_to_screen()`.
 - The inclusive boundary checks reverse velocity without checking its direction. A player exactly at an edge and already moving away from that edge is bounced back toward it.
@@ -36,7 +36,7 @@ Five additional review passes covered input and movement; collision detection; s
 - Expected: reverse only the component directed out of the screen. This is separate from the position and margin issue above.
 - Suggested fix: correct the position when it crosses a boundary, but reverse x velocity only when it points left at the left boundary or right at the right boundary. Apply the equivalent sign checks to y velocity at the top and bottom boundaries.
 
-## 5. Main menu runs without a frame limit (P2)
+## 5. Main menu runs without a frame limit (RT)
 
 - Location: `main.py`, `main()`.
 - The menu repeatedly clears, draws, and flips the display without a clock tick or delay. On systems where display flipping does not block, this consumes CPU continuously while the menu is idle.
@@ -45,7 +45,7 @@ Five additional review passes covered input and movement; collision detection; s
 - Verification: confirmed by code inspection; CPU usage has not been measured in a graphical session.
 - Suggested fix: create a menu `pygame.time.Clock()` and call `tick(60)` once per menu iteration. Keep this separate from the gameplay clock so time spent in a round does not become a menu simulation timestep.
 
-## 6. Small asteroids are removed before entering the screen (P2)
+## 6. Small asteroids are removed before entering the screen (RT)
 
 - Location: `spawnfield.py`, `SpawnField.edges`; `circleshape.py`, `CircleShape.inbounds()`; `asteroid.py`, `Asteroid.update()`.
 - Spawn positions use `ASTEROID_MAX_RADIUS`, but the cleanup margin uses each asteroid's own radius multiplied by seven. At the current scale, the spawn offset is 157 pixels while the smallest asteroid's cleanup margin is only 154 pixels.

@@ -8,7 +8,6 @@ import spawnfield
 from powerups import *
 from constants import *
 import logger
-from main import screen
 
 def closegame(score,player: player.Player):
         final_score = int(score)
@@ -17,7 +16,7 @@ def closegame(score,player: player.Player):
 #        print(f"Final stats - MV:{player.shot_speed} RPM:{int(player.shot_rate)} Pen:{player.shot_pen_count} Total powerups:{player.powered_up_count}")
         return (final_score,player)
 
-def game():
+def game(screen):
     updatable   = pygame.sprite.Group()
     drawable    = pygame.sprite.Group()
     asteroids   = pygame.sprite.Group()

@@ -1,5 +1,5 @@
 import pygame
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH, ASTEROID_MAX_RADIUS
 
 # Base class for game objects
 class CircleShape(pygame.sprite.Sprite):
@@ -17,13 +17,13 @@ class CircleShape(pygame.sprite.Sprite):
         self.radius = radius
 
     def inbounds(self) -> bool:
-        if self.position.x >= SCREEN_WIDTH + (self.radius * 7):
+        if self.position.x >= SCREEN_WIDTH + (ASTEROID_MAX_RADIUS * 1.1):
             return False
-        if self.position.x <= 0 - (self.radius * 7):
+        if self.position.x <= 0 - (ASTEROID_MAX_RADIUS * 1.1):
             return False
-        if self.position.y >= SCREEN_HEIGHT + (self.radius * 7):
+        if self.position.y >= SCREEN_HEIGHT + (ASTEROID_MAX_RADIUS * 1.1):
             return False
-        if self.position.y <= 0 - (self.radius * 7):
+        if self.position.y <= 0 - (ASTEROID_MAX_RADIUS * 1.1):
             return False
         return True
 
