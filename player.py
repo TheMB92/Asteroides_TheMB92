@@ -34,14 +34,8 @@ class Player(circleshape.CircleShape):
     def move(self,dt) -> None:
         fwd = unit_vector.rotate(self.rotation)
         self.velocity += fwd * PLAYER_ACCEL_RATE * self.direction * dt
-        if self.velocity[0] > PLAYER_SPD_LIMIT:
-            self.velocity[0] = PLAYER_SPD_LIMIT
-        if self.velocity[0] < -PLAYER_SPD_LIMIT:
-            self.velocity[0] = -PLAYER_SPD_LIMIT
-        if self.velocity[1] > PLAYER_SPD_LIMIT:
-            self.velocity[1] = PLAYER_SPD_LIMIT
-        if self.velocity[1] < -PLAYER_SPD_LIMIT:
-            self.velocity[1] = -PLAYER_SPD_LIMIT        
+        if self.velocity.length_squared() > PLAYER_SPD_LIMIT ** 2:
+            self.velocity.scale_to_length(PLAYER_SPD_LIMIT)
 
     def shoot(self) -> None:
         fwd = unit_vector.rotate(self.rotation)
@@ -51,16 +45,16 @@ class Player(circleshape.CircleShape):
     def clamp_to_screen(self) -> None:
         if self.position.x >= SCREEN_WIDTH - self.radius/2:
             self.position.x = SCREEN_WIDTH - self.radius/2
-            self.velocity[0] = self.velocity[0]*-0.5
+            self.velocity[0] = abs(self.velocity[0])*-0.5
         if self.position.x <= 0 + self.radius/2:
             self.position.x = 0+ self.radius/2
-            self.velocity[0] = self.velocity[0]*-0.5
+            self.velocity[0] = abs(self.velocity[0])*0.5
         if self.position.y >= SCREEN_HEIGHT - self.radius/2:
             self.position.y = SCREEN_HEIGHT - self.radius/2
-            self.velocity[1] = self.velocity[1]*-0.5
+            self.velocity[1] = abs(self.velocity[1])*-0.5
         if self.position.y <= 0+ self.radius/2:
             self.position.y = 0+ self.radius/2
-            self.velocity[1] = self.velocity[1]*-0.5
+            self.velocity[1] = abs(self.velocity[1])*0.5
 
     def update(self, dt: float) -> None:
         keys = pygame.key.get_pressed()
@@ -71,7 +65,6 @@ class Player(circleshape.CircleShape):
             self.rotate(dt)
         if keys[pygame.K_w] or keys[pygame.K_s]:
             self.move(dt)
-        self.clamp_to_screen()
         if keys[pygame.K_SPACE]:
             self.shot_cd_counter -= dt
             if self.shot_cd_counter <= 0:
@@ -80,4 +73,6 @@ class Player(circleshape.CircleShape):
         else:
             self.shot_cd_counter = 0
         self.position += self.velocity * dt
+        self.clamp_to_screen()
+
 
