@@ -12,4 +12,5 @@ Planned ideas for future development. Unchecked items are not yet implemented.
 - [ ] **Settings menu:** allow players to configure the game, including screen resolution.
 - [ ] **Sound effects:** add audio for firing, hits, asteroid destruction, upgrades, and player death.
 - [ ] **Fullscreen:** support playing in fullscreen mode.
+- [ ] **Pause screen:** pause gameplay, display the current score and player stats, and offer options to resume or exit to the main menu.
 - [ ] **Weapon-change upgrade:** add an upgrade type that changes the weapon and its firing behavior.
