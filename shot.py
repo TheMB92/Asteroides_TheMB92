@@ -1,6 +1,6 @@
 import pygame
 import circleshape
-from constants import SHOT_RADIUS,LINE_WIDTH
+from constants import SCALE, SHOT_RADIUS,LINE_WIDTH
 
 class Shot(circleshape.CircleShape):
     def __init__(self,x: float,y: float, pen_count: int) -> None:
@@ -13,7 +13,7 @@ class Shot(circleshape.CircleShape):
             pygame.Color(255,0,0),
             self.position,
             self.radius,
-            LINE_WIDTH
+            int(LINE_WIDTH * SCALE)
             )
 
     def update(self, dt: float) -> None:

@@ -29,8 +29,8 @@ def game(screen):
     rendered_text.Rendered_Text.containers = (updatable, drawable)
     PowerUP.containers = (updatable, drawable, powerups)
     player1 = player.Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
-    score = rendered_text.Rendered_Score(0.0,0,0)
-    stats = rendered_text.Rendered_Stats(player1,SCREEN_WIDTH-800,0)
+    score = rendered_text.Rendered_Score(0.0,3 * SCALE,3 * SCALE)
+    stats = rendered_text.Rendered_Stats(player1,SCREEN_WIDTH-500*SCALE,3*SCALE)
     clock  = pygame.time.Clock()
     dt     = 0.0
     asteroid_field = spawnfield.AsteroidField()

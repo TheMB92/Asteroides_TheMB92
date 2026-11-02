@@ -120,7 +120,7 @@ class PowerUpField(SpawnField):
             self.spawn_timer = 0
             # spawn a new powerup at a random edge
             edge = random.choice(self.edges)
-            speed = random.randint(80, 300)
+            speed = random.randint(int(80*SCALE), int(300*SCALE))
             velocity = edge[0] * speed
             velocity = velocity.rotate(random.randint(-60,60))
             position = edge[1](random.uniform(0, 1))
