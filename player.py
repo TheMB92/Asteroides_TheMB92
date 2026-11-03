@@ -13,6 +13,7 @@ class Player(circleshape.CircleShape):
         self.shot_rate: int = PLAYER_SHOT_CD_RATE
         self.shot_speed: int = PLAYER_SHOT_SPEED
         self.shot_pen_count = 1
+        self.velocity = pygame.Vector2(0,0)
         self.powered_up_count = 0
         self.direction = False
 

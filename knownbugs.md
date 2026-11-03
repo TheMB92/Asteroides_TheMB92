@@ -22,7 +22,7 @@ Resolved issues are archived in [bughistory.md](bughistory.md). Original issue n
 - Expected: hits along the movement path are detected, including during frame stalls.
 - Suggested fix: use swept collision detection with previous and current positions, testing the relative movement segment against the sum of the collision radii. Alternatively, use a fixed simulation timestep with enough substeps to keep displacement small, checking collisions during each substep. Simply discarding excess elapsed time changes game timing and scoring.
 
-## 9. HUD text is clipped at smaller configured resolutions (P2)
+## 9. HUD text is clipped at smaller configured resolutions (RT)
 
 - Location: `game.py`, `Rendered_Stats` position; `rendered_text.py`, `Rendered_Stats.draw()` and the fixed-size general font.
 - The HUD starts at `SCREEN_WIDTH - 800`, uses fixed offsets of 270 and 600 pixels, and keeps a 30-pixel font regardless of resolution. These values do not scale with the configurable window width.
