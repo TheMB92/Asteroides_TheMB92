@@ -89,6 +89,18 @@ Resolved issues and intended behaviors moved from [knownbugs.md](knownbugs.md). 
 - Resolution: HUD placement now uses `SCREEN_WIDTH - 500 * SCALE`, label offsets use `185 * SCALE` and `390 * SCALE`, and both score and stats render at font size `20 * SCALE`. These values scale with the configured screen height. Original priority: P2.
 - Resolution verification (2026-11-04): Passed headless Pygame rendering checks at 640×360, 800×450, 1280×720, 1920×1080, 2560×1440, 640×480, 800×600, and 1280×1024. Ran one actual gameplay frame at each resolution and separately rendered stats with all upgrades at maximum. Compared each label against an unclipped reference render and checked screen containment and label overlap; all passed. At 640×360, the maximum-upgrade labels occupy x=390–639, fully inside the screen. Tested with SDL dummy video/audio drivers; a graphical desktop session and arbitrary aspect ratios were not tested.
 
+## 12. Event log frame numbers freeze after the snapshot limit (IR)
+
+- Location: `logger.py`, `log_state()` and `log_event()`.
+- `log_state()` returns before incrementing `_frame_count` once it exceeds `_FPS * _MAX_SECONDS`. Event logging continues, but every subsequent event reports frame 961, including events in later rounds. This prevents identifying the actual simulation frame of a hit, split, or upgrade.
+- Reproduction: set `_frame_count` to 960, call `log_state()` 20 times and log an event; call it another 100 times and log another event. Both events report frame 961.
+- Verification (2026-11-01): reproduced with the real logging functions and mocked file writes, preserving existing log files. Both captured event records contained `"frame": 961`.
+- Expected: the snapshot limit stops state snapshots while event frame numbers continue to advance.
+- Suggested fix: increment the frame counter on every gameplay iteration before applying the state-snapshot limit. Keep the limit on snapshot writing only.
+
+- Resolution: `log_state()` now increments `_frame_count` before checking the snapshot limit, so event frame numbers keep advancing after snapshots stop. `game()` resets the counter at the start of each round, restarting frame numbering and the snapshot window. Original priority: P3.
+- Resolution verification (2026-11-04): Passed checks using real logging functions with mocked file writes, preserving existing logs. Snapshots were written at frames 60 through 960 (16 snapshots), with none after the limit. Starting at frame 960, events after 20 and another 100 updates correctly reported frames 980 and 1080; another 1,000 updates produced an event at frame 2080 without further snapshots. Simulating the round-start counter reset and running 60 updates resumed snapshots and event numbering at frame 60.
+
 ## 13. Spawn timers discard elapsed intervals during long frames (IR)
 
 - Location: `spawnfield.py`, `AsteroidField.update()` and `PowerUpField.update()`.

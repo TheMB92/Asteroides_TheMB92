@@ -33,12 +33,13 @@ _start_time = datetime.now()
 def log_state() -> None:
     global _frame_count, _state_log_initialized
 
+    _frame_count += 1
+
     # Stop logging after `_MAX_SECONDS` seconds
     if _frame_count > _FPS * _MAX_SECONDS:
         return
 
     # Take a snapshot approx. once per second
-    _frame_count += 1
     if _frame_count % _FPS != 0:
         return
 

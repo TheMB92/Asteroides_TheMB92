@@ -17,6 +17,7 @@ def closegame(score,player: player.Player):
         return (final_score,player)
 
 def game(screen):
+    logger._frame_count = 0
     updatable   = pygame.sprite.Group()
     drawable    = pygame.sprite.Group()
     asteroids   = pygame.sprite.Group()
