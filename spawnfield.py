@@ -69,8 +69,8 @@ class AsteroidField(SpawnField):
 
     def update(self, dt: float) -> None:
         self.spawn_timer += dt
-        if self.spawn_timer > self.spawn_rate_sec:
-            self.spawn_timer = 0
+        while self.spawn_timer >= self.spawn_rate_sec:
+            self.spawn_timer -= self.spawn_rate_sec
             # spawn a new asteroid at a random edge
             edge = random.choice(self.edges)
             speed = random.randint(ASTEROID_MIN_SPD, (ASTEROID_MIN_SPD * self.max_spd_multiplier))
@@ -116,8 +116,8 @@ class PowerUpField(SpawnField):
 
     def update(self, dt: float) -> None:
         self.spawn_timer += dt
-        if self.spawn_timer > self.spawn_rate_sec:
-            self.spawn_timer = 0
+        while self.spawn_timer >= self.spawn_rate_sec:
+            self.spawn_timer -= self.spawn_rate_sec
             # spawn a new powerup at a random edge
             edge = random.choice(self.edges)
             speed = random.randint(int(80*SCALE), int(300*SCALE))

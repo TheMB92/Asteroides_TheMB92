@@ -88,3 +88,15 @@ Resolved issues and intended behaviors moved from [knownbugs.md](knownbugs.md). 
 
 - Resolution: HUD placement now uses `SCREEN_WIDTH - 500 * SCALE`, label offsets use `185 * SCALE` and `390 * SCALE`, and both score and stats render at font size `20 * SCALE`. These values scale with the configured screen height. Original priority: P2.
 - Resolution verification (2026-11-04): Passed headless Pygame rendering checks at 640×360, 800×450, 1280×720, 1920×1080, 2560×1440, 640×480, 800×600, and 1280×1024. Ran one actual gameplay frame at each resolution and separately rendered stats with all upgrades at maximum. Compared each label against an unclipped reference render and checked screen containment and label overlap; all passed. At 640×360, the maximum-upgrade labels occupy x=390–639, fully inside the screen. Tested with SDL dummy video/audio drivers; a graphical desktop session and arbitrary aspect ratios were not tested.
+
+## 13. Spawn timers discard elapsed intervals during long frames (IR)
+
+- Location: `spawnfield.py`, `AsteroidField.update()` and `PowerUpField.update()`.
+- Each update handles at most one spawn interval and resets `spawn_timer` to zero. Any remaining elapsed time is discarded. Frame stalls therefore reduce asteroid and powerup spawn frequency relative to survival scoring, which uses the full elapsed time.
+- Reproduction: update an asteroid field twice with `dt=1.8`. Only two asteroids spawn over 3.6 seconds, despite the 0.8-second interval. Updating the same total time in 0.1-second steps produces four. For a powerup field, two updates with `dt=6` produce two selection attempts over 12 seconds, versus four attempts with 0.1-second steps at the 3-second interval.
+- Verification (2026-11-01): reproduced both comparisons with real field updates and mocked `spawn()` calls. Powerup counts measure selection attempts, since maxed upgrade types can intentionally produce no pickup.
+- Expected: spawn scheduling accounts for elapsed intervals and retains the unused remainder, independently of frame rate.
+- Suggested fix: subtract the interval instead of resetting to zero, and process each elapsed interval with a loop. If limiting catch-up spawns to avoid bursts, define that policy explicitly and retain the remaining time.
+
+- Resolution: Both spawn fields now process elapsed intervals with `while self.spawn_timer >= self.spawn_rate_sec` and subtract one interval per attempt, preserving the remainder. Original priority: P2.
+- Resolution verification (2026-11-04): All 14 checks passed using the real update methods with mocked `spawn()` calls: long frames, equivalent short frames, exact interval boundaries, retained remainder, multiple intervals in one update, remainder carried into the next update, and zero elapsed time for each field. Two 1.8-second asteroid updates now produce four spawns with 0.4 seconds remaining; two 6-second powerup updates produce four selection attempts with zero remainder. Powerup counts measure selection attempts, since maxed upgrade types can intentionally produce no pickup.
