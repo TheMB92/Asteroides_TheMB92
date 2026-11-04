@@ -77,3 +77,14 @@ Resolved issues and intended behaviors moved from [knownbugs.md](knownbugs.md). 
 
 
 - Resolution verification: Previously verified that importing main succeeds without creating a display, and that gameplay starts and exits using the shared display. Original priority: P3.
+
+## 9. HUD text is clipped at smaller configured resolutions (IR)
+
+- Location: `game.py`, `Rendered_Stats` position; `rendered_text.py`, `Rendered_Stats.draw()` and the fixed-size general font.
+- The HUD starts at `SCREEN_WIDTH - 800`, uses fixed offsets of 270 and 600 pixels, and keeps a 30-pixel font regardless of resolution. These values do not scale with the configurable window width.
+- Reproduction: use a width of 640. The stats start at x=-160, placing almost all of the muzzle-velocity label outside the left edge. An isolated render with the current label measured its right edge at x=4.
+- Expected: all HUD labels remain visible at supported window sizes.
+- Suggested fix: calculate HUD placement from the actual window width and measured text widths, with consistent padding. Scale the font or wrap the stats onto additional rows when necessary; define and validate a minimum supported resolution if needed.
+
+- Resolution: HUD placement now uses `SCREEN_WIDTH - 500 * SCALE`, label offsets use `185 * SCALE` and `390 * SCALE`, and both score and stats render at font size `20 * SCALE`. These values scale with the configured screen height. Original priority: P2.
+- Resolution verification (2026-11-04): Passed headless Pygame rendering checks at 640×360, 800×450, 1280×720, 1920×1080, 2560×1440, 640×480, 800×600, and 1280×1024. Ran one actual gameplay frame at each resolution and separately rendered stats with all upgrades at maximum. Compared each label against an unclipped reference render and checked screen containment and label overlap; all passed. At 640×360, the maximum-upgrade labels occupy x=390–639, fully inside the screen. Tested with SDL dummy video/audio drivers; a graphical desktop session and arbitrary aspect ratios were not tested.

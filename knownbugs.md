@@ -22,14 +22,6 @@ Resolved issues are archived in [bughistory.md](bughistory.md). Original issue n
 - Expected: hits along the movement path are detected, including during frame stalls.
 - Suggested fix: use swept collision detection with previous and current positions, testing the relative movement segment against the sum of the collision radii. Alternatively, use a fixed simulation timestep with enough substeps to keep displacement small, checking collisions during each substep. Simply discarding excess elapsed time changes game timing and scoring.
 
-## 9. HUD text is clipped at smaller configured resolutions (RT)
-
-- Location: `game.py`, `Rendered_Stats` position; `rendered_text.py`, `Rendered_Stats.draw()` and the fixed-size general font.
-- The HUD starts at `SCREEN_WIDTH - 800`, uses fixed offsets of 270 and 600 pixels, and keeps a 30-pixel font regardless of resolution. These values do not scale with the configurable window width.
-- Reproduction: use a width of 640. The stats start at x=-160, placing almost all of the muzzle-velocity label outside the left edge. An isolated render with the current label measured its right edge at x=4.
-- Expected: all HUD labels remain visible at supported window sizes.
-- Suggested fix: calculate HUD placement from the actual window width and measured text widths, with consistent padding. Scale the font or wrap the stats onto additional rows when necessary; define and validate a minimum supported resolution if needed.
-
 ## 10. Player collision shape does not match the visible ship (P2)
 
 - Location: `player.py`, `Player.triangle()`; `circleshape.py`, `CircleShape.collides_with()`.
